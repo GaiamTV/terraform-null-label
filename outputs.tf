@@ -1,40 +1,55 @@
 output "id" {
-  value       = "${null_resource.default.triggers.id}"
+  value       = local.enabled ? local.id : ""
   description = "Disambiguated ID"
 }
 
 output "name" {
-  value       = "${null_resource.default.triggers.name}"
+  value       = local.enabled ? local.name : ""
   description = "Normalized name"
 }
 
 output "namespace" {
-  value       = "${null_resource.default.triggers.namespace}"
+  value       = local.enabled ? local.namespace : ""
   description = "Normalized namespace"
 }
 
 output "stage" {
-  value       = "${null_resource.default.triggers.stage}"
+  value       = local.enabled ? local.stage : ""
   description = "Normalized stage"
 }
 
-output "attributes" {
-  value       = "${null_resource.default.triggers.attributes}"
-  description = "Normalized attributes"
+output "environment" {
+  value       = local.enabled ? local.environment : ""
+  description = "Normalized environment"
 }
 
-# Merge input tags with our tags.
-# Note: `Name` has a special meaning in AWS and we need to disamgiuate it by using the computed `id`
-output "tags" {
-  value = "${
-      merge( 
-        map(
-          "Name", "${null_resource.default.triggers.id}",
-          "Namespace", "${null_resource.default.triggers.namespace}",
-          "Stage", "${null_resource.default.triggers.stage}"
-        ), var.tags
-      )
-    }"
+output "attributes" {
+  value       = local.enabled ? local.attributes : []
+  description = "List of attributes"
+}
 
+output "delimiter" {
+  value       = local.enabled ? local.delimiter : ""
+  description = "Delimiter between `namespace`, `environment`, `stage`, `name` and `attributes`"
+}
+
+output "tags" {
+  value       = local.enabled ? local.tags : {}
   description = "Normalized Tag map"
 }
+
+output "tags_as_list_of_maps" {
+  value       = local.tags_as_list_of_maps
+  description = "Additional tags as a list of maps, which can be used in several AWS resources"
+}
+
+output "context" {
+  value       = local.output_context
+  description = "Context of this module to pass to other label modules"
+}
+
+output "label_order" {
+  value       = local.label_order
+  description = "The naming order of the id output and Name tag"
+}
+
